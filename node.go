@@ -44,12 +44,13 @@ func (s *SelectNode) Walk(sql *strings.Builder) (err error) {
 	if len(s.columns) <= 0 {
 		sql.WriteString("* ")
 	} else {
-		for _, v := range s.columns {
-			sql.WriteString(fmt.Sprintf("%s, ", v))
-		}
+		frag := strings.Join(s.columns, ",")
+		sql.WriteString(strings.TrimSuffix(frag, ","))
 	}
 
-	err = s.Next.Walk(sql)
+	if s.Next != nil {
+		err = s.Next.Walk(sql)
+	}
 	return
 }
 
@@ -65,7 +66,9 @@ func (f *FromNode) Walk(sql *strings.Builder) (err error) {
 		return
 	}
 
-	err = f.Next.Walk(sql)
+	if f.Next != nil {
+		err = f.Next.Walk(sql)
+	}
 	return
 }
 
@@ -81,6 +84,8 @@ func (w *WhereNode) Walk(sql *strings.Builder) (err error) {
 		return
 	}
 
-	err = w.Next.Walk(sql)
+	if w.Next != nil {
+		err = w.Next.Walk(sql)
+	}
 	return
 }
