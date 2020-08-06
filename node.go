@@ -46,6 +46,7 @@ func (s *SelectNode) Walk(sql *strings.Builder) (err error) {
 	} else {
 		frag := strings.Join(s.columns, ",")
 		sql.WriteString(strings.TrimSuffix(frag, ","))
+		sql.WriteString(" ")
 	}
 
 	if s.Next != nil {
