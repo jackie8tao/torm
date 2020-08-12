@@ -1,17 +1,17 @@
-package exp
+package expr
 
 import "github.com/jackie8tao/torm/sqlx"
 
 // IdentifierExp interface for identifierExp expression.
 type IdentifierExp interface {
-	Aliaseable
-	Comparable
-	Inable
-	Isable
-	Likeable
-	Orderable
-	Distinctable
-	Castable
+	sqlx.Aliaseable
+	sqlx.Comparable
+	sqlx.Inable
+	sqlx.Isable
+	sqlx.Likeable
+	sqlx.Orderable
+	sqlx.Distinctable
+	sqlx.Castable
 }
 
 // sql expression for identifierExp
