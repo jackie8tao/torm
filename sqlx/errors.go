@@ -6,8 +6,8 @@ type Error struct {
 	err string
 }
 
-// New
-func New(message string, args ...interface{}) error {
+// NewErr create errors
+func NewErr(message string, args ...interface{}) error {
 	return Error{err: "goqu: " + fmt.Sprintf(message, args...)}
 }
 
