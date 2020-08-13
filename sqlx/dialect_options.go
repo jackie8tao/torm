@@ -1,6 +1,7 @@
 package sqlx
 
 import (
+	"fmt"
 	"time"
 )
 
@@ -206,13 +207,13 @@ type (
 		// 		exp.RegexpILikeOp:    []byte("~*"),
 		// 		exp.RegexpNotILikeOp: []byte("!~*"),
 		// })
-		BooleanOperatorLookup map[exp.BooleanOperation][]byte
+		// BooleanOperatorLookup map[exp.BooleanOperation][]byte
 		// A map used to look up RangeOperations and their SQL equivalents
 		// (Default=map[exp.RangeOperation][]byte{
 		// 		exp.BetweenOp:    []byte("BETWEEN"),
 		// 		exp.NotBetweenOp: []byte("NOT BETWEEN"),
 		// 	})
-		RangeOperatorLookup map[exp.RangeOperation][]byte
+		// RangeOperatorLookup map[exp.RangeOperation][]byte
 		// A map used to look up JoinTypes and their SQL equivalents
 		// (Default= map[exp.JoinType][]byte{
 		// 		exp.InnerJoinType:        []byte(" INNER JOIN "),
@@ -228,7 +229,7 @@ type (
 		// 		exp.NaturalFullJoinType:  []byte(" NATURAL FULL JOIN "),
 		// 		exp.CrossJoinType:        []byte(" CROSS JOIN "),
 		// 	})
-		JoinTypeLookup map[exp.JoinType][]byte
+		// JoinTypeLookup map[exp.JoinType][]byte
 		// Whether or not to use literal TRUE or FALSE for IS statements (e.g. IS TRUE or IS 0)
 		UseLiteralIsBools bool
 		// EscapedRunes is a map of a rune and the corresponding escape sequence in bytes. Used when escaping text
@@ -477,44 +478,44 @@ func DefaultDialectOptions() *SQLDialectOptions {
 		PeriodRune:          '.',
 		EmptyString:         "",
 
-		BooleanOperatorLookup: map[exp.BooleanOperation][]byte{
-			exp.EqOp:             []byte("="),
-			exp.NeqOp:            []byte("!="),
-			exp.GtOp:             []byte(">"),
-			exp.GteOp:            []byte(">="),
-			exp.LtOp:             []byte("<"),
-			exp.LteOp:            []byte("<="),
-			exp.InOp:             []byte("IN"),
-			exp.NotInOp:          []byte("NOT IN"),
-			exp.IsOp:             []byte("IS"),
-			exp.IsNotOp:          []byte("IS NOT"),
-			exp.LikeOp:           []byte("LIKE"),
-			exp.NotLikeOp:        []byte("NOT LIKE"),
-			exp.ILikeOp:          []byte("ILIKE"),
-			exp.NotILikeOp:       []byte("NOT ILIKE"),
-			exp.RegexpLikeOp:     []byte("~"),
-			exp.RegexpNotLikeOp:  []byte("!~"),
-			exp.RegexpILikeOp:    []byte("~*"),
-			exp.RegexpNotILikeOp: []byte("!~*"),
-		},
-		RangeOperatorLookup: map[exp.RangeOperation][]byte{
-			exp.BetweenOp:    []byte("BETWEEN"),
-			exp.NotBetweenOp: []byte("NOT BETWEEN"),
-		},
-		JoinTypeLookup: map[exp.JoinType][]byte{
-			exp.InnerJoinType:        []byte(" INNER JOIN "),
-			exp.FullOuterJoinType:    []byte(" FULL OUTER JOIN "),
-			exp.RightOuterJoinType:   []byte(" RIGHT OUTER JOIN "),
-			exp.LeftOuterJoinType:    []byte(" LEFT OUTER JOIN "),
-			exp.FullJoinType:         []byte(" FULL JOIN "),
-			exp.RightJoinType:        []byte(" RIGHT JOIN "),
-			exp.LeftJoinType:         []byte(" LEFT JOIN "),
-			exp.NaturalJoinType:      []byte(" NATURAL JOIN "),
-			exp.NaturalLeftJoinType:  []byte(" NATURAL LEFT JOIN "),
-			exp.NaturalRightJoinType: []byte(" NATURAL RIGHT JOIN "),
-			exp.NaturalFullJoinType:  []byte(" NATURAL FULL JOIN "),
-			exp.CrossJoinType:        []byte(" CROSS JOIN "),
-		},
+		// BooleanOperatorLookup: map[exp.BooleanOperation][]byte{
+		// 	exp.EqOp:             []byte("="),
+		// 	exp.NeqOp:            []byte("!="),
+		// 	exp.GtOp:             []byte(">"),
+		// 	exp.GteOp:            []byte(">="),
+		// 	exp.LtOp:             []byte("<"),
+		// 	exp.LteOp:            []byte("<="),
+		// 	exp.InOp:             []byte("IN"),
+		// 	exp.NotInOp:          []byte("NOT IN"),
+		// 	exp.IsOp:             []byte("IS"),
+		// 	exp.IsNotOp:          []byte("IS NOT"),
+		// 	exp.LikeOp:           []byte("LIKE"),
+		// 	exp.NotLikeOp:        []byte("NOT LIKE"),
+		// 	exp.ILikeOp:          []byte("ILIKE"),
+		// 	exp.NotILikeOp:       []byte("NOT ILIKE"),
+		// 	exp.RegexpLikeOp:     []byte("~"),
+		// 	exp.RegexpNotLikeOp:  []byte("!~"),
+		// 	exp.RegexpILikeOp:    []byte("~*"),
+		// 	exp.RegexpNotILikeOp: []byte("!~*"),
+		// },
+		// RangeOperatorLookup: map[exp.RangeOperation][]byte{
+		// 	exp.BetweenOp:    []byte("BETWEEN"),
+		// 	exp.NotBetweenOp: []byte("NOT BETWEEN"),
+		// },
+		// JoinTypeLookup: map[exp.JoinType][]byte{
+		// 	exp.InnerJoinType:        []byte(" INNER JOIN "),
+		// 	exp.FullOuterJoinType:    []byte(" FULL OUTER JOIN "),
+		// 	exp.RightOuterJoinType:   []byte(" RIGHT OUTER JOIN "),
+		// 	exp.LeftOuterJoinType:    []byte(" LEFT OUTER JOIN "),
+		// 	exp.FullJoinType:         []byte(" FULL JOIN "),
+		// 	exp.RightJoinType:        []byte(" RIGHT JOIN "),
+		// 	exp.LeftJoinType:         []byte(" LEFT JOIN "),
+		// 	exp.NaturalJoinType:      []byte(" NATURAL JOIN "),
+		// 	exp.NaturalLeftJoinType:  []byte(" NATURAL LEFT JOIN "),
+		// 	exp.NaturalRightJoinType: []byte(" NATURAL RIGHT JOIN "),
+		// 	exp.NaturalFullJoinType:  []byte(" NATURAL FULL JOIN "),
+		// 	exp.CrossJoinType:        []byte(" CROSS JOIN "),
+		// },
 
 		TimeFormat:        time.RFC3339Nano,
 		UseLiteralIsBools: true,
