@@ -6,8 +6,8 @@ import (
 )
 
 type selectVisitor struct {
-	builder    *sqlx.SQLBuilder
-	dialectOpt *sqlx.SQLDialectOptions
+	builder    *SQLBuilder
+	dialectOpt *SQLDialectOptions
 }
 
 func (s *selectVisitor) Visit(rawExpr sqlx.Stmt) (err error) {

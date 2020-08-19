@@ -1,4 +1,4 @@
-package sqlx
+package torm
 
 import (
 	"bytes"
@@ -7,10 +7,9 @@ import (
 )
 
 // PlaceholderFormat is the interface that wraps the ReplacePlaceholders method.
-//
-// ReplacePlaceholders takes a SQL statement and replaces each question mark
-// placeholder with a (possibly different) SQL placeholder.
 type PlaceholderFormat interface {
+	// ReplacePlaceholders takes a SQL statement and replaces each question mark
+	// placeholder with a (possibly different) SQL placeholder.
 	ReplacePlaceholders(sql string) (string, error)
 }
 

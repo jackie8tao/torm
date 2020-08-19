@@ -1,4 +1,4 @@
-package sqlx
+package torm
 
 // Sqlizer is the interface that wraps the ToSql method.
 type Sqlizer interface {
