@@ -7,5 +7,5 @@ type Sqlizer interface {
 	ToSQL() (string, []interface{}, error)
 }
 
-type SqlAssigner interface {
-}
+// SqlSetter
+type SqlSetter func(SQLBuilder) error
