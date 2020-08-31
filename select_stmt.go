@@ -47,8 +47,8 @@ func (sb *SelectBuilder) columnSetter(bd SQLBuilder) (err error) {
 
 // fromSetter
 func (sb *SelectBuilder) fromSetter(bd SQLBuilder) (err error) {
-	if len(sb.whereParts) <= 0 {
-		err = errors.New("")
+	if len(sb.fromParts) <= 0 {
+		err = errors.New("illegal where part")
 		return
 	}
 
@@ -57,7 +57,7 @@ func (sb *SelectBuilder) fromSetter(bd SQLBuilder) (err error) {
 		return
 	}
 
-	for _, v := range sb.whereParts {
+	for _, v := range sb.fromParts {
 		err = bd.WriteSqlizer(v)
 		if err != nil {
 			return
@@ -142,7 +142,7 @@ func (sb *SelectBuilder) orderBySetter(bd SQLBuilder) (err error) {
 	if len(sb.orderBys) <= 0 {
 		return
 	}
-	err = bd.WriteString("ORDER BY")
+	err = bd.WriteString("ORDER BY ")
 	if err != nil {
 		return
 	}
@@ -177,6 +177,11 @@ func (sb *SelectBuilder) offsetSetter(bd SQLBuilder) (err error) {
 func (sb *SelectBuilder) ToSQL() (sql string, args []interface{}, err error) {
 	bd := &bufSQLBuilder{
 		buf: &bytes.Buffer{},
+	}
+
+	err = bd.WriteString("SELECT ")
+	if err != nil {
+		return
 	}
 
 	setters := []SqlSetter{
