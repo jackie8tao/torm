@@ -10,7 +10,7 @@ import (
 // SelectBuilder
 type SelectBuilder struct {
 	distinct    bool
-	columns     []Sqlizer
+	columns     ColList
 	fromParts   []Sqlizer
 	joins       []Sqlizer
 	whereParts  []Sqlizer
@@ -24,24 +24,14 @@ type SelectBuilder struct {
 // distinctSetter
 func (sb *SelectBuilder) distinctSetter(bd SQLBuilder) (err error) {
 	if sb.distinct {
-		err = bd.WriteString(" DISTINCT ")
+		err = bd.WriteString(" DISTINCT")
 	}
 	return
 }
 
 // columnSetter
 func (sb *SelectBuilder) columnSetter(bd SQLBuilder) (err error) {
-	if len(sb.columns) <= 0 {
-		return
-	}
-
-	for _, v := range sb.columns {
-		err = bd.WriteSqlizer(v)
-		if err != nil {
-			return
-		}
-	}
-
+	err = bd.WriteSqlizer(sb.columns)
 	return
 }
 
@@ -52,7 +42,7 @@ func (sb *SelectBuilder) fromSetter(bd SQLBuilder) (err error) {
 		return
 	}
 
-	err = bd.WriteString("FROM ")
+	err = bd.WriteString(" FROM")
 	if err != nil {
 		return
 	}
@@ -179,12 +169,12 @@ func (sb *SelectBuilder) ToSQL() (sql string, args []interface{}, err error) {
 		buf: &bytes.Buffer{},
 	}
 
-	err = bd.WriteString("SELECT ")
+	err = bd.WriteString("SELECT")
 	if err != nil {
 		return
 	}
 
-	setters := []SqlSetter{
+	setters := []SqlInjecter{
 		sb.distinctSetter, sb.columnSetter, sb.fromSetter,
 		sb.whereSetter, sb.groupBySetter, sb.havingSetter,
 		sb.orderBySetter, sb.limitSetter, sb.offsetSetter,

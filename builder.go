@@ -19,21 +19,21 @@ type (
 )
 
 // WriteString
-func (bsb *bufSQLBuilder) WriteString(str string) error {
-	_, err := bsb.buf.WriteString(str)
+func (b *bufSQLBuilder) WriteString(str string) error {
+	_, err := b.buf.WriteString(str)
 	return err
 }
 
 // WriteSqlizer
-func (bsb *bufSQLBuilder) WriteSqlizer(sqlizer Sqlizer) error {
+func (b *bufSQLBuilder) WriteSqlizer(sqlizer Sqlizer) error {
 	sql, _, err := sqlizer.ToSQL()
 	if err != nil {
 		return err
 	}
-	return bsb.WriteString(sql)
+	return b.WriteString(sql)
 }
 
 // ToSQL
-func (bsb *bufSQLBuilder) ToSQL() string {
-	return bsb.buf.String()
+func (b *bufSQLBuilder) ToSQL() string {
+	return b.buf.String()
 }

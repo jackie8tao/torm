@@ -7,8 +7,10 @@ import (
 func TestSelectBuilder_ToSQL(t *testing.T) {
 	sb := &SelectBuilder{
 		distinct: false,
-		columns: []Sqlizer{
-			ColExpr{table: "", column: "*"},
+		columns: ColList{
+			cols: []ColExpr{
+				{table: "", column: "a"},
+			},
 		},
 		fromParts: []Sqlizer{
 			FromExpr{table: "test"},

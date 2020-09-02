@@ -2,7 +2,11 @@ package torm
 
 import (
 	"fmt"
+	"strings"
 )
+
+// SqlInjecter is a function that injects sql expression into sql builder.
+type SqlInjecter func(SQLBuilder) error
 
 // Sqlizer is the interface that wraps the ToSql method.
 type Sqlizer interface {
@@ -11,10 +15,7 @@ type Sqlizer interface {
 	ToSQL() (string, []interface{}, error)
 }
 
-// SqlSetter
-type SqlSetter func(SQLBuilder) error
-
-// ColExpr
+// ColExpr column expression
 type ColExpr struct {
 	table  string
 	column string
@@ -25,7 +26,26 @@ func (e ColExpr) ToSQL() (sql string, args []interface{}, err error) {
 	if e.table != "" {
 		sql += fmt.Sprintf("`%s`.", e.table)
 	}
-	sql += fmt.Sprintf("`%s`, ", e.column)
+	sql += fmt.Sprintf("`%s`", e.column)
+	return
+}
+
+// ColList column expression list.
+type ColList struct {
+	cols []ColExpr
+}
+
+// ToSQL
+func (e ColList) ToSQL() (sql string, args []interface{}, err error) {
+	var part string
+	for _, v := range e.cols {
+		part, _, err = v.ToSQL()
+		if err != nil {
+			return
+		}
+		sql += fmt.Sprintf(" %s,", part)
+	}
+	sql = strings.TrimSuffix(sql, ",")
 	return
 }
 
@@ -36,7 +56,7 @@ type FromExpr struct {
 
 // ToSQL
 func (e FromExpr) ToSQL() (sql string, args []interface{}, err error) {
-	sql += fmt.Sprintf("`%s`", e.table)
+	sql += fmt.Sprintf(" `%s`", e.table)
 	return
 }
 
