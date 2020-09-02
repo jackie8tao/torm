@@ -6,6 +6,9 @@ import (
 	"git.code.oa.com/pluto/torm/expr"
 )
 
+// injector is a function that injects sql expression into builder.
+type injector func(SQLBuilder) error
+
 type (
 	// SQLBuilder
 	SQLBuilder interface {
