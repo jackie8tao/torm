@@ -15,6 +15,6 @@ func (f FromExpr) ToSQL() (sql string, args []interface{}, err error) {
 		err = ErrEmptyTable
 		return
 	}
-	sql = fmt.Sprintf("` %s`", f.table)
+	sql = fmt.Sprintf(" `%s`", f.table)
 	return
 }

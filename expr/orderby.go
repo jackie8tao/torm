@@ -11,6 +11,11 @@ const (
 	DescOrder
 )
 
+var supportedOrders = map[OrderVal]string{
+	AscOrder:  "ASC",
+	DescOrder: "DESC",
+}
+
 // OrderVal order types.
 type OrderVal int
 
@@ -20,21 +25,22 @@ type OrderByExpr struct {
 	col   string
 }
 
+func (o OrderByExpr) convertOrder(order OrderVal) (val string, err error) {
+	var ok bool
+	val, ok = supportedOrders[order]
+	if !ok {
+		err = ErrInvalidOrder
+	}
+	return
+}
+
 // ToSQL this function implements Expr interface.
 func (o OrderByExpr) ToSQL() (sql string, args []interface{}, err error) {
-	var order string
-	switch o.order {
-	case AscOrder:
-		order = "ASC"
-	case DescOrder:
-		order = "DESC"
-	default:
-		err = ErrIllegalOrderBy
+	order, err := o.convertOrder(o.order)
+	if err != nil {
 		return
 	}
-
 	sql = fmt.Sprintf(" %s %s,", o.col, order)
-
 	return
 }
 
@@ -51,10 +57,9 @@ func (o OrderByList) ToSQL() (sql string, args []interface{}, err error) {
 		if err != nil {
 			return
 		}
-		sql += fmt.Sprintf("%s,", seg)
+		sql += seg
 	}
 
 	sql = strings.TrimSuffix(sql, ",")
-
 	return
 }

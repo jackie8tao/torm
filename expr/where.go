@@ -21,18 +21,7 @@ type WhereExpr struct {
 
 // ToSQL this function implements Expr interface.
 func (w WhereExpr) ToSQL() (sql string, args []interface{}, err error) {
-	var oper string
-	switch w.oper {
-	case AndOper:
-		oper = " AND"
-	case OrOper:
-		oper = " OR"
-	default:
-		err = ErrIllegalWhereOperator
-		return
-	}
-
-	sql = fmt.Sprintf(" %s (%s)", oper, w.cond)
+	sql = fmt.Sprintf(" (%s)", w.cond)
 	return
 }
 
@@ -41,18 +30,34 @@ type WhereList struct {
 	wheres []WhereExpr
 }
 
+func (w WhereList) convertOper(oper OperVal) (val string, err error) {
+	switch oper {
+	case OrOper:
+		val = "OR"
+	case AndOper:
+		val = "AND"
+	default:
+		err = ErrInvalidOper
+	}
+	return
+}
+
 // ToSQL this function implements Expr interface.
 func (w WhereList) ToSQL() (sql string, args []interface{}, err error) {
-	w.wheres = append(w.wheres, WhereExpr{
-		oper: AndOper,
-		cond: "1=1",
-	})
+	var (
+		seg  string
+		oper string
+	)
 
-	var seg string
-	for _, v := range w.wheres {
-		seg, _, err = v.ToSQL()
-		if err != nil {
-			return
+	for k, v := range w.wheres {
+		if k == 0 {
+			seg = fmt.Sprintf(" (%s)", v.cond)
+		} else {
+			oper, err = w.convertOper(v.oper)
+			if err != nil {
+				return
+			}
+			seg = fmt.Sprintf(" %s (%s)", oper, v.cond)
 		}
 		sql += seg
 	}

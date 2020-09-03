@@ -18,11 +18,11 @@ func (e ColExpr) ToSQL() (sql string, args []interface{}, err error) {
 	}
 
 	if e.column != "" {
-		sql += fmt.Sprintf("`%s`", e.column)
+		sql += fmt.Sprintf(" `%s`", e.column)
 		return
 	}
 
-	sql += "*"
+	sql += " `*`"
 	return
 }
 
@@ -39,7 +39,7 @@ func (e ColList) ToSQL() (sql string, args []interface{}, err error) {
 		if err != nil {
 			return
 		}
-		sql += fmt.Sprintf(" %s,", part)
+		sql += fmt.Sprintf("%s,", part)
 	}
 	sql = strings.TrimSuffix(sql, ",")
 	return

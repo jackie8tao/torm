@@ -39,11 +39,19 @@ func (s *SelectStmt) distinctInjector(builder SQLBuilder) error {
 
 // colListInjector injects columns segment to the select statement.
 func (s *SelectStmt) colListInjector(builder SQLBuilder) error {
+	if s.columns == nil {
+		return nil
+	}
+
 	return builder.WriteExpr(s.columns)
 }
 
 // fromInjector injects from segment to the select statement.
 func (s *SelectStmt) fromInjector(builder SQLBuilder) error {
+	if s.from == nil {
+		return nil
+	}
+
 	err := builder.WriteString(" FROM")
 	if err != nil {
 		return err
@@ -54,11 +62,19 @@ func (s *SelectStmt) fromInjector(builder SQLBuilder) error {
 
 // joinsInjector injects join segment to the select statement.
 func (s *SelectStmt) joinsInjector(builder SQLBuilder) error {
+	if s.joins == nil {
+		return nil
+	}
+
 	return builder.WriteExpr(s.joins)
 }
 
 // wheresInjector injects where segment to the select statement.
 func (s *SelectStmt) wheresInjector(builder SQLBuilder) error {
+	if s.wheres == nil {
+		return nil
+	}
+
 	err := builder.WriteString(" WHERE")
 	if err != nil {
 		return err
@@ -69,6 +85,10 @@ func (s *SelectStmt) wheresInjector(builder SQLBuilder) error {
 
 // groupBysInjector injects group-by segment to the select statement.
 func (s *SelectStmt) groupBysInjector(builder SQLBuilder) error {
+	if s.groupBys == nil {
+		return nil
+	}
+
 	err := builder.WriteString(" GROUP BY")
 	if err != nil {
 		return err
@@ -79,6 +99,10 @@ func (s *SelectStmt) groupBysInjector(builder SQLBuilder) error {
 
 // havingsInjector injects having segment into the select statement.
 func (s *SelectStmt) havingsInjector(builder SQLBuilder) error {
+	if s.havings == nil {
+		return nil
+	}
+
 	err := builder.WriteString(" HAVING")
 	if err != nil {
 		return err
@@ -89,6 +113,15 @@ func (s *SelectStmt) havingsInjector(builder SQLBuilder) error {
 
 // ordersByInjector injects order-by segment into the select statement.
 func (s *SelectStmt) ordersByInjector(builder SQLBuilder) error {
+	if s.ordersBy == nil {
+		return nil
+	}
+
+	err := builder.WriteString(" ORDER BY")
+	if err != nil {
+		return err
+	}
+
 	return builder.WriteExpr(s.ordersBy)
 }
 

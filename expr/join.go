@@ -10,6 +10,12 @@ const (
 	InnerJoin
 )
 
+var supportedMethods = map[JoinMethod]string{
+	LeftJoin:  "LEFT JOIN",
+	RightJoin: "RIGHT JOIN",
+	InnerJoin: "INNER JOIN",
+}
+
 // JoinMethod join type, eg: LEFT JOIN, RIGHT JOIN and so on.
 type JoinMethod int
 
@@ -20,23 +26,22 @@ type JoinExpr struct {
 	cond   string
 }
 
+func (j JoinExpr) convertMethod(method JoinMethod) (val string, err error) {
+	var ok bool
+	val, ok = supportedMethods[method]
+	if !ok {
+		err = ErrInvalidMethod
+	}
+	return
+}
+
 // ToSQL this function implements Expr interface.
 func (j JoinExpr) ToSQL() (sql string, args []interface{}, err error) {
-	var method string
-	switch j.method {
-	case LeftJoin:
-		method = "LEFT JOIN"
-	case RightJoin:
-		method = "RIGHT JOIN"
-	case InnerJoin:
-		method = "INNER JOIN"
-	default:
-		err = ErrIllegalJoinMethod
+	method, err := j.convertMethod(j.method)
+	if err != nil {
 		return
 	}
-
 	sql = fmt.Sprintf(" %s %s ON %s", method, j.table, j.cond)
-
 	return
 }
 
