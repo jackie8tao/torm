@@ -10,6 +10,11 @@ const (
 	OrOper
 )
 
+var supportedOpers = map[OperVal]string{
+	AndOper: "AND",
+	OrOper:  "OR",
+}
+
 // OperVal operator value.
 type OperVal int
 
@@ -17,11 +22,13 @@ type OperVal int
 type WhereExpr struct {
 	oper OperVal
 	cond string
+	args []interface{}
 }
 
 // ToSQL this function implements Expr interface.
 func (w WhereExpr) ToSQL() (sql string, args []interface{}, err error) {
 	sql = fmt.Sprintf(" (%s)", w.cond)
+	args = w.args
 	return
 }
 
@@ -31,12 +38,9 @@ type WhereList struct {
 }
 
 func (w WhereList) convertOper(oper OperVal) (val string, err error) {
-	switch oper {
-	case OrOper:
-		val = "OR"
-	case AndOper:
-		val = "AND"
-	default:
+	var ok bool
+	val, ok = supportedOpers[oper]
+	if !ok {
 		err = ErrInvalidOper
 	}
 	return
@@ -49,6 +53,8 @@ func (w WhereList) ToSQL() (sql string, args []interface{}, err error) {
 		oper string
 	)
 
+	args = make([]interface{}, 0)
+
 	for k, v := range w.wheres {
 		if k == 0 {
 			seg = fmt.Sprintf(" (%s)", v.cond)
@@ -59,6 +65,7 @@ func (w WhereList) ToSQL() (sql string, args []interface{}, err error) {
 			}
 			seg = fmt.Sprintf(" %s (%s)", oper, v.cond)
 		}
+		args = append(args, v.args...)
 		sql += seg
 	}
 

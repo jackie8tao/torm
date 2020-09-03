@@ -4,13 +4,13 @@ import (
 	"fmt"
 )
 
-// FromExpr from expression.
-type FromExpr struct {
+// TableExpr from expression.
+type TableExpr struct {
 	table string
 }
 
 // ToSQL this function implements Expr interface.
-func (f FromExpr) ToSQL() (sql string, args []interface{}, err error) {
+func (f TableExpr) ToSQL() (sql string, args []interface{}, err error) {
 	if f.table == "" {
 		err = ErrEmptyTable
 		return

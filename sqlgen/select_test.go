@@ -10,7 +10,7 @@ func TestSelectStmt_ToSQL(t *testing.T) {
 	stmt := &SelectStmt{
 		distinct: true,
 		columns:  expr.NewColExpr("*"),
-		from:     expr.NewFromExpr("tableA"),
+		table:    expr.NewTableExpr("tableA"),
 		joins: expr.NewJoinList(
 			expr.NewJoinExpr(expr.LeftJoin, "tableB", "tableA.a = tableB.a"),
 			expr.NewJoinExpr(expr.RightJoin, "tableC", "tableC.a = tableB.a"),

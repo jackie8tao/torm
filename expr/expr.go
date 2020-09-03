@@ -18,6 +18,7 @@ var (
 	ErrInvalidMethod = errors.New("invalid join method")
 	ErrInvalidOper   = errors.New("invalid where operator")
 	ErrInvalidOrder  = errors.New("invalid order-by value")
+	ErrEmptyCol      = errors.New("empty column value")
 )
 
 // NewColExpr creates column expression.
@@ -48,18 +49,19 @@ func NewColList(cols ...string) ColList {
 	}
 }
 
-// NewFromExpr creates from expression.
-func NewFromExpr(table string) FromExpr {
-	return FromExpr{
+// NewTableExpr creates from expression.
+func NewTableExpr(table string) TableExpr {
+	return TableExpr{
 		table: table,
 	}
 }
 
 // NewWhereExpr creates where expression.
-func NewWhereExpr(oper OperVal, cond string) WhereExpr {
+func NewWhereExpr(oper OperVal, cond string, args ...interface{}) WhereExpr {
 	return WhereExpr{
 		oper: oper,
 		cond: cond,
+		args: args,
 	}
 }
 
@@ -98,5 +100,28 @@ func NewOrderByExpr(order OrderVal, col string) OrderByExpr {
 func NewOrderByList(orders ...OrderByExpr) OrderByList {
 	return OrderByList{
 		orders: orders,
+	}
+}
+
+// NewValueExpr creates value expression which is used in update statement.
+func NewValueExpr(col string, val interface{}) ValueExpr {
+	detail := strings.Split(col, ".")
+	if len(detail) >= 2 {
+		return ValueExpr{
+			table: detail[0],
+			col:   detail[1],
+			arg:   val,
+		}
+	}
+	return ValueExpr{
+		col: col,
+		arg: val,
+	}
+}
+
+// NewValueList creates value expression list.
+func NewValueList(vals ...ValueExpr) ValueList {
+	return ValueList{
+		cols: vals,
 	}
 }

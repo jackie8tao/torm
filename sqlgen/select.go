@@ -11,7 +11,7 @@ import (
 type SelectStmt struct {
 	distinct bool
 	columns  expr.Expr
-	from     expr.Expr
+	table    expr.Expr
 	joins    expr.Expr
 	wheres   expr.Expr
 	groupBys expr.Expr
@@ -42,22 +42,19 @@ func (s *SelectStmt) colListInjector(builder SQLBuilder) error {
 	if s.columns == nil {
 		return nil
 	}
-
 	return builder.WriteExpr(s.columns)
 }
 
-// fromInjector injects from segment to the select statement.
+// fromInjector injects table segment to the select statement.
 func (s *SelectStmt) fromInjector(builder SQLBuilder) error {
-	if s.from == nil {
+	if s.table == nil {
 		return nil
 	}
-
 	err := builder.WriteString(" FROM")
 	if err != nil {
 		return err
 	}
-
-	return builder.WriteExpr(s.from)
+	return builder.WriteExpr(s.table)
 }
 
 // joinsInjector injects join segment to the select statement.
@@ -65,7 +62,6 @@ func (s *SelectStmt) joinsInjector(builder SQLBuilder) error {
 	if s.joins == nil {
 		return nil
 	}
-
 	return builder.WriteExpr(s.joins)
 }
 
@@ -74,12 +70,10 @@ func (s *SelectStmt) wheresInjector(builder SQLBuilder) error {
 	if s.wheres == nil {
 		return nil
 	}
-
 	err := builder.WriteString(" WHERE")
 	if err != nil {
 		return err
 	}
-
 	return builder.WriteExpr(s.wheres)
 }
 
@@ -88,12 +82,10 @@ func (s *SelectStmt) groupBysInjector(builder SQLBuilder) error {
 	if s.groupBys == nil {
 		return nil
 	}
-
 	err := builder.WriteString(" GROUP BY")
 	if err != nil {
 		return err
 	}
-
 	return builder.WriteExpr(s.groupBys)
 }
 
@@ -102,12 +94,10 @@ func (s *SelectStmt) havingsInjector(builder SQLBuilder) error {
 	if s.havings == nil {
 		return nil
 	}
-
 	err := builder.WriteString(" HAVING")
 	if err != nil {
 		return err
 	}
-
 	return builder.WriteExpr(s.havings)
 }
 
@@ -116,12 +106,10 @@ func (s *SelectStmt) ordersByInjector(builder SQLBuilder) error {
 	if s.ordersBy == nil {
 		return nil
 	}
-
 	err := builder.WriteString(" ORDER BY")
 	if err != nil {
 		return err
 	}
-
 	return builder.WriteExpr(s.ordersBy)
 }
 
@@ -130,7 +118,6 @@ func (s *SelectStmt) limitInjector(builder SQLBuilder) error {
 	if s.limit <= 0 {
 		return nil
 	}
-
 	return builder.WriteString(fmt.Sprintf(" LIMIT %d", s.limit))
 }
 
@@ -139,11 +126,11 @@ func (s *SelectStmt) offsetInjector(builder SQLBuilder) error {
 	if s.offset <= 0 {
 		return nil
 	}
-
 	return builder.WriteString(fmt.Sprintf(" OFFSET %d", s.offset))
 }
 
-// ToSQL returns the select sql and arguments.if having a error, it will return error.
+// ToSQL returns the select sql and arguments.
+// if having a error, it will return error.
 func (s *SelectStmt) ToSQL() (sql string, args []interface{}, err error) {
 	builder := &bufSQLBuilder{
 		buf:  &strings.Builder{},
